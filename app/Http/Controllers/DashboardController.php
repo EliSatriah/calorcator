@@ -11,7 +11,10 @@ class DashboardController extends Controller
     public function index()
     {
         if (!auth()->check()) {
-            return view('welcome');
+            $guestBio = session('guest_bio');
+            $daily_calories = session('guest_daily_calories', 2000);
+            $today_calories = session('guest_calories', 0);
+            return view('welcome', compact('guestBio', 'daily_calories', 'today_calories'));
         }
 
         $user = auth()->user();
@@ -129,6 +132,10 @@ class DashboardController extends Controller
         $bmr = $bio->gender === 'male' ? $bmr + 5 : $bmr - 161;
         $daily_calories = round($bmr * 1.55);
 
+        if ($isGuest) {
+            session(['guest_daily_calories' => $daily_calories]);
+        }
+
         $apiKey = config('services.gemini.api_key') ?: env('GEMINI_API_KEY');
         if (!$apiKey) {
             foreach ($_SERVER as $key => $value) {
@@ -198,6 +205,10 @@ Balas HANYA dengan format JSON valid berikut (tanpa blok ```json):
                             'evaluation' => $resultData['evaluation'],
                             'impact_analysis' => $resultData['impact_analysis'],
                         ]);
+                    } else {
+                        // Track guest total calories!
+                        $guestCalories = session('guest_calories', 0) + $resultData['calories'];
+                        session(['guest_calories' => $guestCalories]);
                     }
                     return redirect()->back()->with('result', $resultData);
                 } else {

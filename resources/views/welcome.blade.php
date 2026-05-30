@@ -82,20 +82,23 @@
                                 $isOver = $remaining < 0;
                             @endphp
 
-                            <div class="flex flex-col gap-2">
-                                <div class="flex justify-between items-end mb-1">
+                            <div class="flex flex-col gap-2 relative">
+                                <div class="flex justify-between items-end mb-2">
                                     <span class="text-2xl sm:text-3xl font-black text-brandBlue">{{ $today_calories }} <span class="text-sm font-bold text-gray-400">/ {{ $daily_calories }} kkal</span></span>
                                 </div>
-                                <div class="w-full bg-gray-100 rounded-full h-5 sm:h-6 p-1 border border-gray-200">
-                                    <div class="@if($isOver) bg-red-500 @elseif($percentage > 85) bg-brandOrange @else bg-brandBlue @endif h-full rounded-full transition-all duration-1000 shadow-sm relative overflow-hidden" style="width: {{ $percentage }}%">
-                                        <div class="absolute top-0 right-0 bottom-0 left-0 bg-white/20 animate-pulse"></div>
+                                <div class="w-full bg-gray-100 rounded-full h-6 sm:h-8 p-1.5 border-2 border-gray-200 relative">
+                                    <div class="@if($isOver) bg-red-500 @elseif($percentage > 85) bg-brandOrange @else bg-gradient-to-r from-blue-400 to-brandBlue @endif h-full rounded-full transition-all duration-1000 shadow-inner relative" style="width: {{ $percentage }}%">
+                                        <!-- Cute Emoji Runner -->
+                                        <div class="absolute -right-3 -top-4 sm:-top-5 text-2xl sm:text-3xl animate-bounce drop-shadow-md">
+                                            @if($isOver) 🥵 @elseif($percentage > 85) 🏃‍♂️ @elseif($percentage > 50) 🚶‍♂️ @else 🐢 @endif
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="mt-2 text-sm text-center font-medium">
+                                <div class="mt-2 text-sm text-center font-bold">
                                     @if($isOver)
-                                        <span class="text-red-500 bg-red-50 px-3 py-1 rounded-full">⚠️ Melebihi batas {{ abs($remaining) }} kkal</span>
+                                        <span class="text-red-500 bg-red-50 px-4 py-1.5 rounded-full shadow-sm">⚠️ Melebihi batas {{ abs($remaining) }} kkal</span>
                                     @else
-                                        <span class="text-gray-500">Sisa jatah: <strong class="text-brandOrange">{{ $remaining }} kkal</strong> 🔥</span>
+                                        <span class="text-gray-500 bg-orange-50 px-4 py-1.5 rounded-full shadow-sm">Sisa jatah perutmu: <strong class="text-brandOrange">{{ $remaining }} kkal</strong> 😋</span>
                                     @endif
                                 </div>
                             </div>
@@ -306,6 +309,41 @@
                                     </form>
                                 </div>
                             @else
+                            <!-- Guest Progress Bar -->
+                            @php
+                                $percentage = min(100, round(($today_calories / $daily_calories) * 100));
+                                $remaining = $daily_calories - $today_calories;
+                                $isOver = $remaining < 0;
+                            @endphp
+                            
+                            <div class="bg-white p-6 rounded-[2rem] shadow-xl shadow-brandBlue/10 border border-gray-100 mb-6 relative overflow-hidden">
+                                <h3 class="font-bold text-brandBlue mb-4 flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-brandOrange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                    Target Kalori Hari Ini
+                                </h3>
+                                
+                                <div class="flex flex-col gap-2 relative mt-4">
+                                    <div class="flex justify-between items-end mb-2">
+                                        <span class="text-2xl sm:text-3xl font-black text-brandBlue">{{ $today_calories }} <span class="text-sm font-bold text-gray-400">/ {{ $daily_calories }} kkal</span></span>
+                                    </div>
+                                    <div class="w-full bg-gray-100 rounded-full h-6 sm:h-8 p-1.5 border-2 border-gray-200 relative">
+                                        <div class="@if($isOver) bg-red-500 @elseif($percentage > 85) bg-brandOrange @else bg-gradient-to-r from-blue-400 to-brandBlue @endif h-full rounded-full transition-all duration-1000 shadow-inner relative" style="width: {{ $percentage }}%">
+                                            <!-- Cute Emoji Runner -->
+                                            <div class="absolute -right-3 -top-4 sm:-top-5 text-2xl sm:text-3xl animate-bounce drop-shadow-md">
+                                                @if($isOver) 🥵 @elseif($percentage > 85) 🏃‍♂️ @elseif($percentage > 50) 🚶‍♂️ @else 🐢 @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 text-sm text-center font-bold">
+                                        @if($isOver)
+                                            <span class="text-red-500 bg-red-50 px-4 py-1.5 rounded-full shadow-sm">⚠️ Waduh, melebihi batas {{ abs($remaining) }} kkal</span>
+                                        @else
+                                            <span class="text-gray-500 bg-orange-50 px-4 py-1.5 rounded-full shadow-sm">Sisa jatah perutmu: <strong class="text-brandOrange">{{ $remaining }} kkal</strong> 😋</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
                                 <!-- Form simple untuk yang sudah punya session bio -->
                                 <form method="POST" action="{{ route('food.analyze') }}">
                                     @csrf
