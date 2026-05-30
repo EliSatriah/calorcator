@@ -129,9 +129,9 @@ class DashboardController extends Controller
         $bmr = $bio->gender === 'male' ? $bmr + 5 : $bmr - 161;
         $daily_calories = round($bmr * 1.55);
 
-        $apiKey = getenv('GEMINI_API_KEY') ?: env('GEMINI_API_KEY');
+        $apiKey = config('services.gemini.api_key');
         if (!$apiKey) {
-            return redirect()->route('dashboard')->with('error', 'API Key belum disetting di .env!');
+            return redirect()->route('dashboard')->with('error', 'API Key belum disetting di .env atau server variables!');
         }
 
         $foodInput = $request->input('food_input');
