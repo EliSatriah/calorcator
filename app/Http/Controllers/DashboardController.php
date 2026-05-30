@@ -129,7 +129,7 @@ class DashboardController extends Controller
         $bmr = $bio->gender === 'male' ? $bmr + 5 : $bmr - 161;
         $daily_calories = round($bmr * 1.55);
 
-        $apiKey = env('GEMINI_API_KEY');
+        $apiKey = getenv('GEMINI_API_KEY') ?: env('GEMINI_API_KEY');
         if (!$apiKey) {
             return redirect()->route('dashboard')->with('error', 'API Key belum disetting di .env!');
         }
