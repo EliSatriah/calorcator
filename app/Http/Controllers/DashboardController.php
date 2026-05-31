@@ -146,11 +146,6 @@ class DashboardController extends Controller
             }
         }
 
-        // Ultimate fallback to ensure it works on Railway without env issues
-        if (!$apiKey) {
-            $apiKey = 'AQ.Ab8RN6LU' . 'ccKLxdyz4ByOMuTgarVYt_hmBEOTsWyqVPv3obbXRA';
-        }
-        
         if (!$apiKey) {
             return redirect()->route('dashboard')->with('error', 'API Key belum disetting di .env atau server variables!');
         }
